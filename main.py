@@ -8,4 +8,11 @@ e-mail: p174@mail.ru
 import streamlit as st
 
 if __name__ == "__main__":
-    st.write('Hello World!!!')
+    # Заголовок приложения
+    st.header("st.button")
+    # Формирую кнопку  с надписью Say Hello
+    if st.button("Say Hello"):
+        # Выводит надись, если кнопка нажата
+        st.write("Why hello there")
+    else:
+        st.write("Goodbye!!!")
