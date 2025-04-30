@@ -1,0 +1,17 @@
+[project]
+requires-python = ">= 3.11"
+
+[tool.ruff]
+line-length = 79
+
+[tool.ruff.format]
+quote-style = "double"
+
+#рекомендуется по pep8
+indent-style = "space" 
+
+docstring-code-format = true
+
+[tool.ruff.lint]
+select = ["E", "F", "UP", "B", "SIM", "I", "A", "C", "T"]
+# ignore = []
