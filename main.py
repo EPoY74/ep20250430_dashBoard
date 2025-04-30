@@ -12,7 +12,7 @@ if __name__ == "__main__":
     st.header("st.button")
     # Формирую кнопку  с надписью Say Hello
     if st.button("Say Hello"):
-        # Выводит надись, если кнопка нажата
+        # Выводит надпись, если кнопка нажата
         st.write("Why hello there")
     else:
         st.write("Goodbye!!!")
