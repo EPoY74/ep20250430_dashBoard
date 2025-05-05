@@ -8,7 +8,7 @@ import pandas as pd
 import time
 
 
-DASHBOARD_COLUNNS = 4
+DASHBOARD_COLUNNS = 3
 
 
 def main() -> None:
@@ -16,7 +16,7 @@ def main() -> None:
     Точка входа в программу
     """
 
-    st.title("Мониторинг видеонаблюдения")
+    # st.title("Мониторинг видеонаблюдения")
 
     def fetch_serevers_data() -> list[dict[str, Any | None]]:
         """
@@ -50,6 +50,13 @@ def main() -> None:
         }
         .online { color: green; }
         .offline { color: red; }
+        .servers-container {
+            width: 1800px
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 10px; /* Унифицированный отступ */
+        }
         </style>
     """,
         unsafe_allow_html=True,
@@ -61,9 +68,10 @@ def main() -> None:
         gap="medium",
         vertical_alignment="center"
         )
-
+    
+    st.markdown('<div class="servers-container">', unsafe_allow_html=True)
     for i, server in enumerate(servers_health):
-        with view_columns_per_row[i % DASHBOARD_COLUNNS]:
+        with view_columns_per_row[(i % DASHBOARD_COLUNNS)]:
             st.markdown(
                 f"""
                     <div class="server-card">
