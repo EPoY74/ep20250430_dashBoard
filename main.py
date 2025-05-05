@@ -3,16 +3,8 @@
 трассир.
 Автор: Евгений Петров
 e-mail: p174@mail.ru
+https://30days-tmp.streamlit.app/?challenge=Day+5
 """
 
 import streamlit as st
 
-if __name__ == "__main__":
-    # Заголовок приложения
-    st.header("st.button")
-    # Формирую кнопку  с надписью Say Hello
-    if st.button("Say Hello"):
-        # Выводит надпись, если кнопка нажата
-        st.write("Why hello there")
-    else:
-        st.write("Goodbye!!!")
