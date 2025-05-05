@@ -15,4 +15,8 @@
 Шаг1
 https://10.1.15.115:8080/login?username=***&password=***
 Шаг2
-https://10.1.15.115:8080/health?sid=tQYrWWmt
+https://10.1.15.115:8080/health?sid=tQYrWWmt # Запрос здоровья
+
+https://10.1.15.115:8080/settings/network_interfaces/hostname?sid=EEPnwWL4 # Запрос названия сервера
+
+https://10.1.15.115:8080/settings/?sid=EEPnwWL4 # Запрос  настроек сервера
