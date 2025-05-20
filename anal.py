@@ -6,12 +6,13 @@ import pandas as pd
 # Загрузка данных
 data = []
 with open("cameras_errirs_trassir.log", "r") as file:
-    for line in file:
+    for line_number, line in enumerate(file, start = 1):
        
         parts = line.strip().split(",")
         lenparts = len(parts)
         if  lenparts < 3: continue
-        # print(parts)
+        print(f"Обрабатывается строка {line_number}:")
+        print(line)
         time_str = parts[0].strip()
         name = parts[1].split(":")[1].strip()
         event = parts[2].split(":")[1].strip()
