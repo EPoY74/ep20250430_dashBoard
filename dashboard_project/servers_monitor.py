@@ -1,3 +1,9 @@
+"""
+Мониторинг серверов видеонаблюдения Трассир через Интернет
+Автор: Евгений Петров
+Почта: p174@mail.ru, epoy74@gmail.com
+"""
+
 import asyncio
 import logging
 import os
