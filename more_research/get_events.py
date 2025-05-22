@@ -5,6 +5,7 @@
 """
 
 import logging
+import os
 import time
 
 import aiohttp
@@ -14,10 +15,10 @@ import requests
 logging.basicConfig(
     level=logging.DEBUG,  # Уровень логгирования
     format="%(asctime)s - %(levelname)s - %(message)s",  # формат
-    
+
     # если хочешь писать в файл
     # filename='app.log',
-    
+
     # 'a' — добавлять, 'w' — перезаписывать
     # filemode='a'
 )
@@ -25,13 +26,15 @@ logging.basicConfig(
 
 dotenv.load_dotenv()
 
-LOGIN_URL = "https://10.1.15.100:8080/login"
-EVENTS_URL = "https://10.1.15.100:8080/health"
+LOGIN_URL = os.getenv("LOGIN_URL")
+EVENTS_URL = os.getenv("EVENTS_URL")
+DVR_USER_NAME = os.getenv("DVR_USER_NAME")
+DVR_PASSWORD = os.getenv("DVR_PASSWORD")
 
 # Авторизация
 resp = requests.get(
     LOGIN_URL,
-    params={"username": "admin", "password": "7905520Tr"},
+    params={"username": DVR_USER_NAME, "password": DVR_PASSWORD},
     verify=False,
     timeout=5,
 )
