@@ -15,10 +15,8 @@ import requests
 logging.basicConfig(
     level=logging.DEBUG,  # Уровень логгирования
     format="%(asctime)s - %(levelname)s - %(message)s",  # формат
-
     # если хочешь писать в файл
     # filename='app.log',
-
     # 'a' — добавлять, 'w' — перезаписывать
     # filemode='a'
 )
