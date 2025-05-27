@@ -5,8 +5,11 @@
 """
 
 import asyncio
+import json
 import logging
 import os
+import ssl
+from enum import verify
 from typing import Optional
 
 import aiohttp
@@ -26,7 +29,7 @@ DB_DSN = (
 )
 
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+    level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
 
@@ -46,9 +49,10 @@ class HealthResponse(BaseModel):
 
 
 async def get_sid(session: aiohttp.ClientSession, ip: str) -> str | None:
+    logging.debug(f"[{ip}] Попытка входа: {USERNAME} {PASSWORD}")
     try:
         url = f"https://{ip}:8080/login"
-        async with session.get(
+        async with session.post(
             url,
             params={"username": USERNAME or "", "password": PASSWORD or ""},
             ssl=False,
@@ -58,6 +62,7 @@ async def get_sid(session: aiohttp.ClientSession, ip: str) -> str | None:
             return data.get("sid")
     except Exception as e:
         logging.error(f"[{ip}] Ошибка авторизации: {e}")
+        logging.error(f"{url}")
         return None
 
 
@@ -81,22 +86,23 @@ async def get_health(
 
 async def save_to_db(conn, ip: str, data: HealthResponse):
     try:
+        raw_json = json.dumps(data.model_dump(mode="json"))
         await conn.execute(
             """
             INSERT INTO server_health (
-                ip, raw, timestamp,
+                ip,  timestamp,
                 channels_total, channels_online, cpu_load, uptime,
                 disks_ok, database_ok, network_ok, automation_ok,
-                disks_stat_main_days, disks_stat_priv_days, disks_stat_subs_days
+                disks_stat_main_days, disks_stat_priv_days,
+                disks_stat_subs_days, raw
             ) VALUES (
-                $1, $2, NOW(),
+                $1, NOW(), $2,
                 $3, $4, $5, $6,
                 $7, $8, $9, $10,
                 $11, $12, $13
             )
             """,
             ip,
-            data.dict(),
             data.channels_total,
             data.channels_online,
             data.cpu_load,
@@ -108,6 +114,7 @@ async def save_to_db(conn, ip: str, data: HealthResponse):
             data.disks_stat_main_days,
             data.disks_stat_priv_days,
             data.disks_stat_subs_days,
+            raw_json,
         )
     except Exception as e:
         logging.error(f"[{ip}] Ошибка записи в БД: {e}")
@@ -133,7 +140,7 @@ async def main():
             async with pool.acquire() as conn:
                 tasks = [monitor_server(ip, session, conn) for ip in SERVERS]
                 await asyncio.gather(*tasks)
-            await asyncio.sleep(5)
+            await asyncio.sleep(15)
 
 
 if __name__ == "__main__":
