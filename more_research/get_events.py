@@ -24,8 +24,8 @@ logging.basicConfig(
 
 dotenv.load_dotenv()
 
-LOGIN_URL = os.getenv("LOGIN_URL")
-EVENTS_URL = os.getenv("EVENTS_URL")
+LOGIN_URL = str(os.getenv("LOGIN_URL"))
+EVENTS_URL = str(os.getenv("EVENTS_URL"))
 DVR_USER_NAME = os.getenv("DVR_USER_NAME")
 DVR_PASSWORD = os.getenv("DVR_PASSWORD")
 
