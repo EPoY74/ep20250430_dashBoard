@@ -51,7 +51,10 @@ async def get_sid(session: aiohttp.ClientSession, ip: str) -> str | None:
         url = f"https://{ip}:8080/login"
         async with session.post(
             url,
-            params={"username": DVR_USERNAME or "", "password": DVR_PASSWORD or ""},
+            params={
+                "username": DVR_USERNAME or "", 
+                "password": DVR_PASSWORD or ""
+                },
             ssl=False,
             timeout=aiohttp.ClientTimeout(total=5),
         ) as resp:
