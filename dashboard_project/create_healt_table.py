@@ -1,4 +1,4 @@
-
+"""
 
 CREATE TABLE server_health (
     id SERIAL PRIMARY KEY,
@@ -21,3 +21,4 @@ CREATE TABLE server_health (
 
     raw JSONB
 );
+"""
