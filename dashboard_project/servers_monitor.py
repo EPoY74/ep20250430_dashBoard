@@ -8,9 +8,6 @@ import asyncio
 import json
 import logging
 import os
-import ssl
-from enum import verify
-from typing import Optional
 
 import aiohttp
 import asyncpg
@@ -19,8 +16,8 @@ from pydantic import BaseModel, ValidationError
 
 # --- конфигурация и .env ---
 dotenv.load_dotenv()
-USERNAME = os.getenv("USERNAME")
-PASSWORD = os.getenv("PASSWORD")
+DVR_USERNAME = os.getenv("USERNAME")
+DVR_PASSWORD = os.getenv("PASSWORD")
 SERVERS = os.getenv("SERVERS", "").split(",")
 
 DB_DSN = (
@@ -49,12 +46,12 @@ class HealthResponse(BaseModel):
 
 
 async def get_sid(session: aiohttp.ClientSession, ip: str) -> str | None:
-    logging.debug(f"[{ip}] Попытка входа: {USERNAME} {PASSWORD}")
+    logging.debug(f"[{ip}] Попытка входа: {DVR_USERNAME} {DVR_PASSWORD}")
     try:
         url = f"https://{ip}:8080/login"
         async with session.post(
             url,
-            params={"username": USERNAME or "", "password": PASSWORD or ""},
+            params={"username": DVR_USERNAME or "", "password": DVR_PASSWORD or ""},
             ssl=False,
             timeout=aiohttp.ClientTimeout(total=5),
         ) as resp:
@@ -62,7 +59,6 @@ async def get_sid(session: aiohttp.ClientSession, ip: str) -> str | None:
             return data.get("sid")
     except Exception as e:
         logging.error(f"[{ip}] Ошибка авторизации: {e}")
-        logging.error(f"{url}")
         return None
 
 
@@ -116,11 +112,12 @@ async def save_to_db(conn, ip: str, data: HealthResponse):
             data.disks_stat_subs_days,
             raw_json,
         )
+        # await conn.commit()
     except Exception as e:
         logging.error(f"[{ip}] Ошибка записи в БД: {e}")
 
 
-async def monitor_server(ip: str, session: aiohttp.ClientSession, conn):
+async def monitor_server(ip: str, session: aiohttp.ClientSession, pool):
     ip = ip.strip()
     sid = await get_sid(session, ip)
     if sid:
@@ -130,17 +127,18 @@ async def monitor_server(ip: str, session: aiohttp.ClientSession, conn):
                 f"[{ip}] channels_online={health_data.channels_online}, "
                 f"cpu={health_data.cpu_load:.1f}%"
             )
-            await save_to_db(conn, ip, health_data)
+            async with pool.acquire() as conn:
+                await save_to_db(conn, ip, health_data) 
 
 
 async def main():
-    pool = await asyncpg.create_pool(dsn=DB_DSN)
+    pool = await asyncpg.create_pool(dsn=DB_DSN, max_size=15)
     async with aiohttp.ClientSession() as session:
         while True:
-            async with pool.acquire() as conn:
-                tasks = [monitor_server(ip, session, conn) for ip in SERVERS]
-                await asyncio.gather(*tasks)
-            await asyncio.sleep(15)
+            # async with pool.acquire() as conn:
+            tasks = [monitor_server(ip, session, pool) for ip in SERVERS]
+            await asyncio.gather(*tasks)
+            await asyncio.sleep(60)
 
 
 if __name__ == "__main__":
