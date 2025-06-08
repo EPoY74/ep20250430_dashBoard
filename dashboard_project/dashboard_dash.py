@@ -1,5 +1,25 @@
+import logging
+import os
+
 import dash_bootstrap_components as dbc
+import dotenv
 from dash import Dash, html
+from numpy import info
+
+# --- конфигурация и .env ---
+dotenv.load_dotenv()
+DVR_USERNAME = os.getenv("USERNAME")
+DVR_PASSWORD = os.getenv("PASSWORD")
+SERVERS = os.getenv("SERVERS", "").split(",")
+
+DB_DSN = (
+    f"postgresql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@"
+    f"{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
+)
+
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
@@ -56,4 +76,6 @@ app.layout = html.Div(
 )
 
 if __name__ == "__main__":
+    logging.info("Запуск вывода информации")
     app.run(debug=True)
+    logging.info("Остановка вывода информации")
