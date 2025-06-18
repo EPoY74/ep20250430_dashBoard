@@ -13,12 +13,13 @@ import aiohttp
 import asyncpg
 import dotenv
 from pydantic import BaseModel, ValidationError
+from pydantic.dataclasses import dataclass
 
 # --- конфигурация и .env ---
 dotenv.load_dotenv()
 DVR_USERNAME = os.getenv("USERNAME")
 DVR_PASSWORD = os.getenv("PASSWORD")
-SERVERS = os.getenv("SERVERS", "").split(",")
+SERVERS_CATALOG = os.getenv("SERVERS", "").split(",")
 
 DB_DSN = (
     f"postgresql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@"
@@ -29,6 +30,20 @@ logging.basicConfig(
     level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
+@dataclass
+class DVRSereverBaseInfo:
+    """
+    Класс для работы с сервером видеонаблюдения.
+
+    Атрибуты:
+    server_ip (str): ip адрес сервера видеонаблюдения
+    dvr_session(str | None): сессия для работы с сервером видеонаблюдения.
+    Сессия обычно возврящается в ответ на авторизацию по паре логин-пароль
+    """
+    def __init__(self, server_ip: str, dvr_session: str | None):
+        self.server_ip = server_ip
+        self.dvr_session = dvr_session
+        
 
 # --- pydantic модель для ответа health ---
 class HealthResponse(BaseModel):
@@ -139,7 +154,7 @@ async def main():
     async with aiohttp.ClientSession() as session:
         while True:
             # async with pool.acquire() as conn:
-            tasks = [monitor_server(ip, session, pool) for ip in SERVERS]
+            tasks = [monitor_server(ip, session, pool) for ip in SERVERS_CATALOG]
             await asyncio.gather(*tasks)
             await asyncio.sleep(60)
 
