@@ -15,20 +15,35 @@ import dotenv
 from pydantic import BaseModel, ValidationError
 from pydantic.dataclasses import dataclass
 
-# --- конфигурация и .env ---
-dotenv.load_dotenv()
-DVR_USERNAME = os.getenv("USERNAME")
-DVR_PASSWORD = os.getenv("PASSWORD")
-SERVERS_CATALOG = os.getenv("SERVERS", "").split(",")
-
-DB_DSN = (
-    f"postgresql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@"
-    f"{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
-)
-
 logging.basicConfig(
     level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s"
 )
+
+
+class EnvFileNotFound(BaseException):
+    """
+    Класс для обработки ошибки открытия .env файла
+    """
+    pass
+
+# --- конфигурация и .env ---
+if dotenv.load_dotenv():
+    logging.info("Обнаружен и загружается .env")    
+    try:
+        DVR_USERNAME = os.getenv("DVR_USERNAME")
+        DVR_PASSWORD = os.getenv("DVR_PASSWORD")
+        SERVERS_CATALOG = os.getenv("SERVERS", "").split(",")
+    except    
+    DB_DSN = (
+        f"postgresql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@"
+        f"{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
+    )
+else:
+    err_message = "Файл .env не найден в текущей папке"
+    logging.error(err_message)
+    raise EnvFileNotFound(err_message)
+
+
 
 @dataclass
 class DVRSereverBaseInfo:
@@ -154,7 +169,9 @@ async def main():
     async with aiohttp.ClientSession() as session:
         while True:
             # async with pool.acquire() as conn:
-            tasks = [monitor_server(ip, session, pool) for ip in SERVERS_CATALOG]
+            tasks = (
+                [monitor_server(ip, session, pool) for ip in SERVERS_CATALOG]
+            )
             await asyncio.gather(*tasks)
             await asyncio.sleep(60)
 
