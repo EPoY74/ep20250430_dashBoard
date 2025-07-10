@@ -1,5 +1,3 @@
-
-
 CREATE TABLE server_health (
     id SERIAL PRIMARY KEY,
     ip TEXT NOT NULL,

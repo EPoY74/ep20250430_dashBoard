@@ -2,11 +2,11 @@
 Дашбоард от AI болванка
 """
 
-from typing import Any
-import streamlit as st
-import pandas as pd
 import time
+from typing import Any
 
+import pandas as pd
+import streamlit as st
 
 DASHBOARD_COLUNNS = 3
 

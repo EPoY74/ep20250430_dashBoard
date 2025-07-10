@@ -1,3 +1,4 @@
+"""
 {
     "disks": "1",
     "database": "1",
@@ -37,3 +38,4 @@ https://10.1.15.115:8080/settings/?sid=EEPnwWL4 # Запрос  настроек
 	"disks_stat_priv_days": "0.00",
 	"disks_stat_subs_days": "14.05"
 }
+"""

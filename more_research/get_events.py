@@ -31,10 +31,9 @@ def init_logger():
 init_logger()
 
 dotenv.load_dotenv()
-# DVR_USER_NAME: str | None = None
-# print_to_user: str | None = "Ошибок к выводу в логгер не было."
-LOGIN_URL = os.getenv("LOGIN_URL")
-EVENTS_URL = os.getenv("EVENTS_URL")
+
+LOGIN_URL = str(os.getenv("LOGIN_URL"))
+EVENTS_URL = str(os.getenv("EVENTS_URL"))
 DVR_USER_NAME = os.getenv("DVR_USER_NAME")
 if DVR_USER_NAME is None:
     print_to_user = (
