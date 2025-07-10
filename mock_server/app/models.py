@@ -13,4 +13,4 @@ class Item(BaseModel):
     name: str
     description: str | None = None
     price: float = 0
-    in_stock: True = True
+    in_stock: bool = True
