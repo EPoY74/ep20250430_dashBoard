@@ -3,8 +3,9 @@
 тестирования дашбоарда дла dar trassir
 """
 
-import models
 from fastapi import FastAPI
+
+from app.models import Item
 
 app = FastAPI()
 
@@ -25,3 +26,27 @@ def say_hello(name: str = "Гость"):
     name(str): Имя гостя, которого приветсвуем
     """
     return {"message": f"Привет, {name}!"}
+
+@app.get("/item/{item_id}")
+def read_item(item_id: int, detail: bool | None = False):
+    """
+    Возвращает информацию об одном объекте с номером item_id
+
+    Аргументы:
+    item_id(int): номер объекта
+    """
+    return {
+        "item_id": item_id, 
+        "detail" : detail 
+        }
+
+@app.post("/items/")
+def create_item(item: Item):
+    """
+    Создаю объект 
+    """
+    return {
+        "message" : f"Товар {item.name} создан!",
+        "data": item
+
+    }
