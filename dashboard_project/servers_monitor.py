@@ -26,6 +26,12 @@ class EnvFileNotFound(BaseException):
     """
     pass
 
+class EnvVariableNotFound(BaseException):
+    """
+    Класс для обработки ошибки открытия .env файла
+    """
+    pass
+
 # --- конфигурация и .env ---
 if dotenv.load_dotenv():
     logging.info("Обнаружен и загружается .env")    
@@ -33,7 +39,9 @@ if dotenv.load_dotenv():
         DVR_USERNAME = os.getenv("DVR_USERNAME")
         DVR_PASSWORD = os.getenv("DVR_PASSWORD")
         SERVERS_CATALOG = os.getenv("SERVERS", "").split(",")
-    except    
+    except Exception as err:
+        logging.error(err)
+        raise err
     DB_DSN = (
         f"postgresql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@"
         f"{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
@@ -45,19 +53,38 @@ else:
 
 
 
-@dataclass
+# @dataclass
 class DVRSereverBaseInfo:
     """
     Класс для работы с сервером видеонаблюдения.
 
     Атрибуты:
-    server_ip (str): ip адрес сервера видеонаблюдения
-    dvr_session(str | None): сессия для работы с сервером видеонаблюдения.
+    server_ip (str | None): ip адрес сервера видеонаблюдения
+    (по умолчанию None) 
+    dvr_session(str | None): сессия для работы с сервером видеонаблюдения
+    (по умолчанию None).
+    dvr_login(str | None): логин для авторизации на сервере  видеонаблюдения
+    (по-умолчанию None).
+    dvr_password(str | None): пароль для авторизации на сервере видеонаблюдения 
+    (по умолчанию None)
     Сессия обычно возврящается в ответ на авторизацию по паре логин-пароль
     """
-    def __init__(self, server_ip: str, dvr_session: str | None):
+
+    all_dvr_login: str | None = None
+    all_dvr_password: str | None = None
+
+    
+    def __init__(
+            self, 
+            server_ip: str | None = None, 
+            dvr_session: str | None = None,
+            dvr_login: str | None = None,
+            dvr_password: str | None = None
+            ):
         self.server_ip = server_ip
         self.dvr_session = dvr_session
+    
+    def 
         
 
 # --- pydantic модель для ответа health ---
