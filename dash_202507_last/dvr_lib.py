@@ -6,8 +6,8 @@
 Телефон: +7 952 517 4228
 """
 
-import httpx
-from httpx import Response
+import requests
+from requests import Response
 
 
 class TrassirConnector:
@@ -19,6 +19,7 @@ class TrassirConnector:
     
     _master_login: str | None = None
     _master_password: str | None = None
+    _sert_path = "TRASSIR.crt"
      
 
     def __init__(self, host:str, port:int = 8080, timeout: float = 5.0):
@@ -112,14 +113,19 @@ class TrassirConnector:
         ENDPOINT = f"https://{self.host}:{self.port}/login?username={self.login}&password={self.password}"
 
         try:
-            responce: Response = httpx.post(ENDPOINT)
+            response: Response = requests.post(
+                ENDPOINT, 
+                verify=self._sert_path, 
+                timeout=self.timeout
+                )
+            response.raise_for_status()
         except Exception as err:
             raise err
 
         try:
-            if responce.status_code == 200:
-                self.sid = responce.json()["sid"]
-                print(f"Сервер: {self.host}, sid: {self.sid}")
+            if response.status_code == 200:
+                self.sid = response.json()["sid"]
+                print(f"Сервер: {self.host}, sid: {self.sid}") #noqa
                 return True
             else:
                 return False
