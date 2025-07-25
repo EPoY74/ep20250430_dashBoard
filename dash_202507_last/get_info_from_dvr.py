@@ -11,9 +11,9 @@ from dvr_lib import TrassirConnector
 tr15 = TrassirConnector("10.1.15.115")
 
 try:
-    if tr15.identification("", ""):
-        print("Подключение к серверу успешно")
+    if tr15.identification("p174@mail.ru", "_EPoY_1980_"):
+        print("Подключение к серверу успешно") #noqa
     else:
-        print("подключение к серверу не удалось")
+        print("подключение к серверу не удалось") #noqa
 except Exception as err:
     raise err
