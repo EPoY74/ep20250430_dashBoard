@@ -27,14 +27,6 @@ class EnvFileNotFound(BaseException):
 
     pass
 
-<<<<<<< HEAD
-class EnvVariableNotFound(BaseException):
-    """
-    Класс для обработки ошибки открытия .env файла
-    """
-    pass
-
-=======
 
 class EnvVariableNotFound(BaseException):
     """
@@ -52,7 +44,6 @@ class EnvVariableNotCorrect(BaseException):
     pass
 
 
->>>>>>> 85418635620cb78a69d66350e3f59f994c0c9850
 # --- конфигурация и .env ---
 if dotenv.load_dotenv():
     logging.info("Обнаружен и загружается .env")
@@ -66,15 +57,6 @@ if dotenv.load_dotenv():
         DVR_USERNAME = os.getenv("DVR_USERNAME")
         DVR_PASSWORD = os.getenv("DVR_PASSWORD")
         SERVERS_CATALOG = os.getenv("SERVERS", "").split(",")
-<<<<<<< HEAD
-    except Exception as err:
-        logging.error(err)
-        raise err
-    DB_DSN = (
-        f"postgresql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@"
-        f"{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
-    )
-=======
         DB_DSN = (
             f"postgresql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@"
             f"{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
@@ -83,19 +65,13 @@ if dotenv.load_dotenv():
         err_message = f"Переменная не найдена: {err}"
         logging.error(err_message)
         raise EnvVariableNotFound(err_message) from err
->>>>>>> 85418635620cb78a69d66350e3f59f994c0c9850
 else:
     err_message = "Файл .env не найден в текущей папке"
     logging.error(err_message)
     raise EnvFileNotFound(err_message)
 
 
-<<<<<<< HEAD
-
-# @dataclass
-=======
 @dataclass
->>>>>>> 85418635620cb78a69d66350e3f59f994c0c9850
 class DVRSereverBaseInfo:
     """
     Класс для работы с сервером видеонаблюдения.
@@ -112,29 +88,10 @@ class DVRSereverBaseInfo:
     Сессия обычно возврящается в ответ на авторизацию по паре логин-пароль
     """
 
-<<<<<<< HEAD
-    all_dvr_login: str | None = None
-    all_dvr_password: str | None = None
-
-    
-    def __init__(
-            self, 
-            server_ip: str | None = None, 
-            dvr_session: str | None = None,
-            dvr_login: str | None = None,
-            dvr_password: str | None = None
-            ):
-        self.server_ip = server_ip
-        self.dvr_session = dvr_session
-    
-    def 
-        
-=======
     def __init__(self, server_ip: str, dvr_session: str | None):
         self.server_ip = server_ip
         self.dvr_session = dvr_session
 
->>>>>>> 85418635620cb78a69d66350e3f59f994c0c9850
 
 # --- pydantic модель для ответа health ---
 class HealthResponse(BaseModel):
