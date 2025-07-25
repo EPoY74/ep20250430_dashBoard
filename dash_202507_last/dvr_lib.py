@@ -1,5 +1,5 @@
 """
-Файл для базового класса подключения к dvr trassir
+Файл класса для базового класса подключения к dvr trassir
 Автор: Евгений Петров
 Почта: p174@mail.ru
 Почта: epoy74@gmail.com
@@ -8,6 +8,7 @@
 
 import requests
 from requests import Response
+
 
 class TrassirConnector:
     """
@@ -88,7 +89,8 @@ class TrassirConnector:
             raise ValueError(err)
     
     def identification(
-            self, dvr_login: str = "",
+            self, 
+            dvr_login: str = "",
             dvr_password: str = "") -> bool:
         """
         Автоизация на сервере видеонаблюдения.
