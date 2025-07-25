@@ -1,7 +1,12 @@
 CREATE TABLE server_health (
     id SERIAL PRIMARY KEY,
     ip TEXT NOT NULL,
-    timestamp TIMESTAMPTZ DEFAULT now(),
+    
+    -- для postgres
+    --timestamp TIMESTAMPTZ DEFAULT now(),
+    
+    -- для mariaDB
+    timestamp TIMESTAMP DEFAULT now(),
 
     channels_total INTEGER,
     channels_online INTEGER,
