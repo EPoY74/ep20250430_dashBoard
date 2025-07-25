@@ -11,7 +11,7 @@ from dvr_lib import TrassirConnector
 tr15 = TrassirConnector("10.1.15.115")
 
 try:
-    if tr15.identification("admin", "7905520Tr"):
+    if tr15.identification("", ""):
         print("Подключение к серверу успешно")
     else:
         print("подключение к серверу не удалось")

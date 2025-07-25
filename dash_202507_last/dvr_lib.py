@@ -19,7 +19,7 @@ class TrassirConnector:
     
     _master_login: str | None = None
     _master_password: str | None = None
-    _sert_path = "TRASSIR.crt"
+    _sert_path = "./TRASSIR.crt"
      
 
     def __init__(self, host:str, port:int = 8080, timeout: float = 5.0):
@@ -102,20 +102,26 @@ class TrassirConnector:
         Официальная информация:
         https://www.dssl.ru/files/trassir/manual/ru/sdk-examples-id.html
         Пример запроса:
-        https://192.168.1.200:8080/login?username=Admin&password=987654321
+        http://192.168.1.200:8080/login?username=Admin&password=987654321
 
         login(str): Логин для идентификации По умолчанию: ""
         password(str): Пароль для идентификации. По умолчанию: ""
         """
         self.login = dvr_login
         self.password = dvr_password
+        data = {
+            "username": self.login,
+            "password": self.password
+        }
 
-        ENDPOINT = f"https://{self.host}:{self.port}/login?username={self.login}&password={self.password}"
+        # ENDPOINT = f"http://{self.host}:{self.port}/login?username={self.login}&password={self.password}"
+        ENDPOINT = f"https://{self.host}:{self.port}/login"
 
         try:
+            print(ENDPOINT)
             response: Response = requests.post(
-                ENDPOINT, 
-                verify=self._sert_path, 
+                ENDPOINT,
+                data,
                 timeout=self.timeout
                 )
             response.raise_for_status()
