@@ -6,8 +6,8 @@
 Телефон: +7 952 517 4228
 """
 
-import requests
-from requests import Response
+import httpx
+from httpx import Response
 
 
 class TrassirConnector:
@@ -21,17 +21,21 @@ class TrassirConnector:
     _master_password: str | None = None
      
 
-    def __init__(self, host:str, port:int = 8080):
+    def __init__(self, host:str, port:int = 8080, timeout: float = 5.0):
         """
         Инициализация экзеппляра класса конкретными значениям:
         host(str): адрес сервера видоеонаблюдения
         port(int): Порт для подключения (по умочанию 8080)
+        timeout(float): Таймаут ожидания  при запросе. По умолчанию 5 секунд
 
         Адрес порта для подключения взят с официального сайта:
         https://www.dssl.ru/files/trassir/manual/ru/sdk-examples-settings.html
         """
         self.host = host
         self.port = port
+        self.timeout = timeout
+        self.login: str | None = None
+        self.password: str | None = None
         self.sid: str | None = None
 
     @property
@@ -52,7 +56,7 @@ class TrassirConnector:
         return: Если все корректно, возвращает присвоенный логин
         """
         if isinstance(dvr_master_login, str):
-            self.master_login = dvr_master_login
+            self._master_login = dvr_master_login
             return self._master_login
         else:
             err = (
@@ -79,7 +83,7 @@ class TrassirConnector:
         return: Если все корректно, возвращает присвоенный логин
         """
         if isinstance(dvr_master_password, str):
-            self.master_login = dvr_master_password
+            self._master_password = dvr_master_password
             return self._master_password
         else:
             err = (
@@ -108,7 +112,7 @@ class TrassirConnector:
         ENDPOINT = f"https://{self.host}:{self.port}/login?username={self.login}&password={self.password}"
 
         try:
-            responce: Response = requests.post(ENDPOINT)
+            responce: Response = httpx.post(ENDPOINT)
         except Exception as err:
             raise err
 
